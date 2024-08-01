@@ -13,9 +13,14 @@ public interface DriverRepository extends JpaRepository<Driver,Long> {
 
     Optional<Driver> findByIdAndLicenseNumber(Long id, String licenseNumber);
 
-    @Query(nativeQuery = true,value = "SELECT * FROM Driver WHERE id = :id AND license_number = :license") //raw mysql query and error is thrown at runtime if query has issue
+    /*   @Query(nativeQuery = true,value = "SELECT * FROM Driver WHERE id = :id AND license_number = :license") //raw mysql query and error is thrown at runtime if query has issue
     Optional<Driver> rawFindByIdAndLicenseNumber(Long id, String license);
 
     @Query("FROM Driver as d WHERE d.id = :id AND d.licenseNumber= :ln") //It is Hibernate Query , errors are thrown at compile time, hence it is better
     Optional<Driver> hqlFindByIdAndLicense(Long id, String ln);
+    */
+
+    List<Driver> findAllByIdIn(List<Long> driverIds);
+
+
 }

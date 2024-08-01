@@ -6,13 +6,13 @@ import com.example.UberReviewService.models.Review;
 import com.example.UberReviewService.repositories.BookingRepository;
 import com.example.UberReviewService.repositories.DriverRepository;
 import com.example.UberReviewService.repositories.ReviewRepository;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Service;
 
-import java.util.Date;
-import java.util.List;
-import java.util.Optional;
+import java.lang.reflect.Array;
+import java.util.*;
 
 @Service
 public class ReviewService implements CommandLineRunner {
@@ -29,6 +29,7 @@ public class ReviewService implements CommandLineRunner {
         this.driverRepository = driverRepository;
     }
     @Override
+    @Transactional
     public void run(String... args) throws Exception {
         System.out.println("inside ReviewService----------");
 //        Review r = Review.builder()
@@ -68,7 +69,19 @@ public class ReviewService implements CommandLineRunner {
 
 //        }
 //        Optional<Booking> b = bookingRepository.findById(1L);
-        Optional<Driver> d = driverRepository.hqlFindByIdAndLicense(1L,"DL121212");
-        System.out.println(d.get().getName());
+//        Optional<Driver> d = driverRepository.hqlFindByIdAndLicense(1L,"DL121212");
+//        System.out.println(d.get().getName());
+
+        List<Long> driverIds = new ArrayList<>(Arrays.asList(1L,2L));
+        List<Driver> drivers = driverRepository.findAllByIdIn((driverIds));
+
+        //One solution to N+1 problem
+     //   List<Booking> bookings = bookingRepository.findAllByDriverIn(drivers);
+
+
+        for (Driver driver : drivers) {
+            List<Booking> bookings = driver.getBookings();
+            bookings.forEach(booking -> System.out.println(booking.getId()));
+        }
     }
 }
